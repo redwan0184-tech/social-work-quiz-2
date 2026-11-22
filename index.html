@@ -1,0 +1,387 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>নিশ্চিন্তপুর ডিগ্রি কলেজ - সমাজকর্ম কুইজ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f3f4f6; }
+        .option-label { transition: all 0.2s ease; }
+        .option-label:hover { background-color: #eff6ff; border-color: #3b82f6; }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+    <!-- নেভিগেশন বার -->
+    <nav class="bg-blue-800 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <span class="font-bold text-base md:text-lg tracking-wide">অনলাইন অনুশীলন কুইজ</span>
+            <div class="space-x-2">
+                <button onclick="showStudentView()" id="btnStudent" class="bg-white text-blue-800 px-3 py-1.5 rounded-lg text-sm font-semibold shadow">কুইজ পেজ</button>
+                <button onclick="openPasswordModal()" id="btnTeacher" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-lg text-sm font-semibold border border-blue-400">🔒 লোকাল ড্যাশবোর্ড</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- কলেজ ও বিষয়ের প্রধান শিরোনাম -->
+    <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white py-8 px-4 shadow-md text-center">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide mb-2">নিশ্চিন্তপুর ডিগ্রি কলেজ</h1>
+            <p class="text-xl md:text-2xl font-semibold text-blue-100 mb-1">বিষয়: সমাজকর্ম</p>
+            <p class="text-sm md:text-base text-blue-200">১ম পত্র — ১ম অধ্যায় (সমাজকর্ম: প্রকৃতি ও পরিধি) | পূর্ণমান: ২০</p>
+            <div class="mt-4 inline-block bg-white/15 backdrop-blur-sm px-4 py-1 rounded-full text-xs md:text-sm text-blue-50 border border-white/20">
+                Prepared by: <span class="font-semibold">Md Redwan</span>, Lecturer in Social Work
+            </div>
+        </div>
+    </header>
+
+    <!-- পাসওয়ার্ড মডাল -->
+    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-2">শিক্ষক ড্যাশবোর্ড লগইন</h2>
+            <p class="text-sm text-gray-600 mb-4">ফলাফল দেখতে পাসওয়ার্ড দিন</p>
+            <div class="relative mb-3">
+                <input type="password" id="teacherPassInput" placeholder="পাসওয়ার্ড লিখুন..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:border-blue-600">
+                <button type="button" onclick="togglePassVisibility()" class="absolute right-3 top-2.5 text-gray-500 hover:text-gray-800 text-lg" title="পাসওয়ার্ড দেখুন">👁️</button>
+            </div>
+            <p id="passError" class="text-red-600 text-sm mb-3 hidden">❌ ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।</p>
+            <div class="flex justify-end space-x-2">
+                <button onclick="closePasswordModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">বাতিল</button>
+                <button onclick="verifyPassword()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">প্রবেশ করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- শিক্ষার্থী কুইজ সেকশন -->
+    <main id="studentSection" class="max-w-3xl mx-auto px-4 py-6 flex-grow w-full">
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6 border-t-4 border-blue-700">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">শিক্ষার্থীর তথ্য পূরণ করো:</h2>
+
+            <div id="studentInfoBox" class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">শিক্ষার্থীর নাম *</label>
+                    <input type="text" id="studentName" placeholder="তোমার পুরো নাম লেখো" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">রোল নম্বর *</label>
+                    <input type="number" id="studentRoll" placeholder="রোল নম্বর" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">বর্ষ নির্বাচন করো *</label>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="year" value="১ম বর্ষ" onclick="selectOnlyOneYear(this)" class="w-5 h-5 text-blue-600 rounded">
+                            <span class="ml-2 text-gray-800 font-medium">১ম বর্ষ</span>
+                        </label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="year" value="২য় বর্ষ" onclick="selectOnlyOneYear(this)" class="w-5 h-5 text-blue-600 rounded">
+                            <span class="ml-2 text-gray-800 font-medium">২য় বর্ষ</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ফলাফল বক্স -->
+        <div id="resultBox" class="hidden bg-white rounded-xl shadow-md p-6 mb-6 border-t-4 border-green-600 text-center">
+            <h3 class="text-2xl font-bold text-green-700 mb-2">🎉 কুইজ সম্পন্ন হয়েছে!</h3>
+            <p id="resultStudentDetails" class="text-gray-700 font-medium mb-2"></p>
+            <p id="cloudSyncStatus" class="text-sm font-semibold text-blue-600 mb-3">⏳ শিক্ষকের সার্ভারে ফলাফল পাঠানো হচ্ছে...</p>
+            <div class="inline-block bg-green-100 text-green-800 text-3xl font-bold px-6 py-3 rounded-xl mb-4">
+                প্রাপ্ত নম্বর: <span id="scoreDisplay">0</span> / ২০
+            </div>
+            <p class="text-sm text-gray-600 mb-4">নিচে তোমার ভুল ও সঠিক উত্তরগুলোর ব্যাখ্যা দেখে নাও।</p>
+            <button onclick="resetQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg shadow">🔄 পুনরায় পরীক্ষা দাও</button>
+        </div>
+
+        <!-- প্রশ্ন তালিকা -->
+        <div id="quizContainer" class="space-y-4"></div>
+
+        <!-- সাবমিট বাটন -->
+        <div id="submitContainer" class="mt-8 text-center">
+            <button id="submitBtn" onclick="submitQuiz()" class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white text-lg font-bold px-10 py-3.5 rounded-xl shadow-lg transition">✅ উত্তর সাবমিট করো</button>
+        </div>
+    </main>
+
+    <!-- শিক্ষক ড্যাশবোর্ড সেকশন -->
+    <section id="teacherSection" class="hidden max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">📊 এই ডিভাইসের ফলাফল রেকর্ড</h2>
+                    <p class="text-sm text-gray-600">সব ছাত্রের অনলাইন ফলাফল সরাসরি আপনার <b>Google Sheet</b>-এ জমা হচ্ছে।</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="exportToCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow">📥 এক্সেল (CSV) ডাউনলোড</button>
+                    <button onclick="clearAllRecords()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow">🗑️ মুছুন</button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 border-b-2 border-gray-300 text-gray-700 text-sm">
+                            <th class="py-3 px-4">ক্রম</th>
+                            <th class="py-3 px-4">শিক্ষার্থীর নাম</th>
+                            <th class="py-3 px-4">রোল</th>
+                            <th class="py-3 px-4">বর্ষ</th>
+                            <th class="py-3 px-4">প্রাপ্ত নম্বর</th>
+                            <th class="py-3 px-4">সময়</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody" class="divide-y divide-gray-200 text-sm">
+                        <tr><td colspan="6" class="py-6 text-center text-gray-500">এখনো কোনো রেকর্ড নেই।</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ফুটার -->
+    <footer class="bg-gray-800 text-gray-300 text-center py-4 mt-8 border-t border-gray-700">
+        <p class="text-sm font-medium">Prepared by: <span class="text-white font-semibold">Md Redwan</span>, Lecturer in Social Work</p>
+        <p class="text-xs text-gray-400 mt-0.5">নিশ্চিন্তপুর ডিগ্রি কলেজ</p>
+    </footer>
+
+    <script>
+        // =========================================================================
+        // নিচের কোটেশনের ভেতরে আপনার Google Apps Script Web App URL টি পেস্ট করুন:
+        const GOOGLE_SHEET_URL = "YOUR_GOOGLE_SHEET_WEB_APP_URL_HERE";
+        // =========================================================================
+
+        const questions = [
+            { q: "১. 'Social Work' শব্দটির বাংলা প্রতিশব্দ কী?", options: ["সমাজকল্যাণ", "সমাজকর্ম", "সমাজসেবা", "সমাজসংস্কার"], ans: 1, exp: "'Social Work'-এর প্রকৃত বাংলা প্রতিশব্দ হলো সমাজকর্ম, আর 'Social Welfare'-এর অর্থ সমাজকল্যাণ।" },
+            { q: "২. সমাজকর্ম কোন ধরনের বিজ্ঞান?", options: ["প্রাকৃতিক বিজ্ঞান", "ফলিত সামাজিক বিজ্ঞান", "ভৌত বিজ্ঞান", "চিকিৎসা বিজ্ঞান"], ans: 1, exp: "সমাজকর্ম তাত্ত্বিক জ্ঞানের বাস্তব প্রয়োগ ঘটায় বলে এটি একটি ফলিত সামাজিক বিজ্ঞান।" },
+            { q: "৩. সমাজকর্মের মূল লক্ষ্য কী?", options: ["আর্থিক সাহায্য প্রদান", "সামাজিক ভূমিকা পালনে সক্ষম করে তোলা", "বেকার ভাতা প্রদান", "চিকিৎসা সেবা দেওয়া"], ans: 1, exp: "সমাজকর্ম মানুষকে এমনভাবে সাহায্য করে যেন তারা নিজেরাই নিজেদের সমস্যা সমাধান করে সামাজিক ভূমিকা পালন করতে পারে।" },
+            { q: "৪. 'Introduction to Social Welfare' গ্রন্থটির রচয়িতা কে?", options: ["ম্যারি রিচমন্ড", "ডব্লিউ. এ. ফ্রিডল্যান্ডার", "রবার্ট এল. বার্কার", "কার্ল রজার্স"], ans: 1, exp: "বিখ্যাত সমাজকর্মী ওয়াল্টার আর্থার ফ্রিডল্যান্ডার (W. A. Friedlander) এই গ্রন্থটি রচনা করেন।" },
+            { q: "৫. সমাজকর্মের মৌলিক পদ্ধতি কয়টি?", options: ["২টি", "৩টি", "৪টি", "৬টি"], ans: 1, exp: "সমাজকর্মের মৌলিক পদ্ধতি ৩টি: ব্যক্তি সমাজকর্ম, দল সমাজকর্ম এবং সমষ্টি সমাজকর্ম।" },
+            { q: "৬. কোনটিকে সমাজকর্মের সহায়ক পদ্ধতি বলা হয়?", options: ["ব্যক্তি সমাজকর্ম", "সমাজকর্ম প্রশাসন", "দল সমাজকর্ম", "সমষ্টি উন্নয়ন"], ans: 1, exp: "সমাজকর্ম প্রশাসন, সমাজকর্ম গবেষণা এবং সামাজিক কার্যক্রম হলো সহায়ক পদ্ধতি।" },
+            { q: "৭. সমাজকর্মের দর্শন কোনটির ওপর ভিত্তি করে গড়ে উঠেছে?", options: ["ধর্মীয় অনুশাসন", "মানবতাবাদ ও গণতান্ত্রিক মূল্যবোধ", "রাজনৈতিক আদর্শ", "অর্থনৈতিক মুনাফা"], ans: 1, exp: "মানুষের মর্যাদা ও অধিকারের স্বীকৃতি অর্থাৎ মানবতাবাদ ও গণতান্ত্রিক মূল্যবোধ সমাজকর্মের মূল দর্শন।" },
+            { q: "৮. 'Social Diagnosis' গ্রন্থটি কত সালে প্রকাশিত হয়?", options: ["১৯০৫ সালে", "১৯১৭ সালে", "১৯২৯ সালে", "১৯৪২ সালে"], ans: 1, exp: "ম্যারি রিচমন্ড ১৯১৭ সালে সমাজকর্মের অন্যতম ভিত্তিগ্রন্থ 'Social Diagnosis' প্রকাশ করেন।" },
+            { q: "৯. শিল্পবিপ্লব সর্বপ্রথম কোন দেশে সংঘটিত হয়?", options: ["আমেরিকা", "জার্মানি", "ইংল্যান্ড", "ফ্রান্স"], ans: 2, exp: "অষ্টাদশ শতাব্দীর দ্বিতীয়ার্ধে ইংল্যান্ডে সর্বপ্রথম শিল্পবিপ্লব শুরু হয়।" },
+            { q: "১০. আধুনিক সমাজকর্মের জন্ম কোথায়?", options: ["ইংল্যান্ড ও আমেরিকায়", "ভারত ও বাংলাদেশে", "জার্মানি ও ফ্রান্সে", "জাপান ও চীনে"], ans: 0, exp: "ইংল্যান্ডে শিল্পবিপ্লব পরবর্তী সমস্যা মোকাবিলা এবং আমেরিকায় এর পেশাদার বিকাশের মাধ্যমে আধুনিক সমাজকর্মের জন্ম।" },
+            { q: "১১. 'সক্ষমকারী পেশা' (Enabling Profession) বলা হয় কোনটিকে?", options: ["আইন পেশাকে", "সমাজকর্ম পেশাকে", "শিক্ষকতা পেশাকে", "সাংবাদিকতা পেশাকে"], ans: 1, exp: "সমাজকর্ম মানুষকে স্বাবলম্বী ও সমস্যা সমাধানে সক্ষম করে তোলে বলে একে সক্ষমকারী পেশা বলে।" },
+            { q: "১২. 'The Social Work Dictionary' গ্রন্থটির প্রণেতা কে?", options: ["রবার্ট এল. বার্কার", "এইচ. এইচ. পার্লম্যান", "জি. কনপকা", "ম্যারি রিচমন্ড"], ans: 0, exp: "রবার্ট এল. বার্কার (Robert L. Barker) 'The Social Work Dictionary' রচনা করেন।" },
+            { q: "১৩. সমাজকর্ম কোন ধরনের সমস্যা নিয়ে কাজ করে?", options: ["শুধুমাত্র অর্থনৈতিক", "বহুমুখী ও মনো-সামাজিক", "শুধুমাত্র শারীরিক", "শুধুমাত্র পারিবারিক"], ans: 1, exp: "মানুষের মনস্তাত্ত্বিক ও সামাজিক উভয় দিক বিবেচনা করে সমাজকর্ম কাজ করে।" },
+            { q: "১৪. নিচের কোনটি সমাজকর্মের পরিধির অন্তর্ভুক্ত?", options: ["চিকিৎসা সমাজকর্ম", "বিদ্যালয় সমাজকর্ম", "প্রবীণ কল্যাণ", "উপরের সবগুলো"], ans: 3, exp: "চিকিৎসা, বিদ্যালয়, প্রবীণ, শিশু ও শিল্প কল্যাণ সবই সমাজকর্মের পরিধিভুক্ত।" },
+            { q: "১৫. সমাজকর্মের জ্ঞানভিত্তি কোন বিষয়গুলো থেকে সংগৃহীত?", options: ["সমাজবিজ্ঞান ও মনোবিজ্ঞান", "অর্থনীতি ও রাষ্ট্রবিজ্ঞান", "নৃবিজ্ঞান", "উপরের সবগুলো"], ans: 3, exp: "সমাজকর্ম একটি সমন্বিত বিজ্ঞান যা সমাজবিজ্ঞান, মনোবিজ্ঞান, অর্থনীতি ও রাষ্ট্রবিজ্ঞান থেকে জ্ঞান আহরণ করে।" },
+            { q: "১৬. ব্যক্তি সমাজকর্মের জনক কে?", options: ["ম্যারি রিচমন্ড", "জেন অ্যাডামস", "ফ্রিডল্যান্ডার", "ম্যাকাইভার"], ans: 0, exp: "ম্যারি রিচমন্ডকে (Mary Richmond) ব্যক্তি সমাজকর্মের জনক বা অগ্রদূত বলা হয়।" },
+            { q: "১৭. কত সালে ইংল্যান্ডে 'দরিদ্র আইন' (Poor Law) সংস্কার করা হয়?", options: ["১৬০১ সালে", "১৮৩৪ সালে", "১৯০৫ সালে", "১৯৪২ সালে"], ans: 1, exp: "১৬০১ সালের এলিজাবেথীয় দরিদ্র আইন পরবর্তীতে ১৮৩৪ সালে সংস্কার করা হয়।" },
+            { q: "১৮. সমাজকর্মের পরিধি কীরূপ?", options: ["অত্যন্ত সংকীর্ণ", "ব্যাপক ও গতিশীল", "স্থির ও অপরিবর্তনীয়", "শুধুমাত্র শহরাঞ্চলে সীমাবদ্ধ"], ans: 1, exp: "সমাজ পরিবর্তনের সাথে সাথে নতুন নতুন সমস্যার উদ্ভব হওয়ায় সমাজকর্মের পরিধি অত্যন্ত ব্যাপক ও গতিশীল।" },
+            { q: "১৯. 'বৈজ্ঞানিক সমাজকর্ম' বলতে কী বোঝায়?", options: ["যন্ত্রপাতির ব্যবহার", "সুনির্দিষ্ট পদ্ধতি ও জ্ঞানের প্রয়োগ", "ল্যাবরেটরি গবেষণা", "পরিসংখ্যানের ব্যবহার"], ans: 1, exp: "সুশৃঙ্খল জ্ঞান, মূল্যবোধ এবং বৈজ্ঞানিক পদ্ধতির মাধ্যমে সমস্যা সমাধানই বৈজ্ঞানিক সমাজকর্ম।" },
+            { q: "২০. সমাজকর্ম শিক্ষার প্রথম আনুষ্ঠানিক যাত্রা শুরু হয় কত সালে?", options: ["১৮৯৮ সালে", "১৯০৪ সালে", "১৯১৭ সালে", "১৯৫০ সালে"], ans: 0, exp: "১৮৯৮ সালে নিউইয়র্ক স্কুল অব ফিলানথ্রপিতে গ্রীষ্মকালীন প্রশিক্ষণের মাধ্যমে সমাজকর্ম শিক্ষার যাত্রা শুরু হয়।" }
+        ];
+
+        let isSubmitted = false;
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            questions.forEach((item, index) => {
+                let optionsHTML = '';
+                item.options.forEach((opt, optIndex) => {
+                    optionsHTML += `
+                        <label id="label_${index}_${optIndex}" class="option-label flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer">
+                            <input type="radio" name="q_${index}" value="${optIndex}" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                            <span class="ml-3 text-gray-800">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                container.innerHTML += `
+                    <div id="qCard_${index}" class="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">${item.q}</h3>
+                        <div class="space-y-2">${optionsHTML}</div>
+                        <div id="exp_${index}" class="hidden mt-3 p-3 rounded-lg text-sm bg-blue-50 text-blue-900 border border-blue-200">
+                            <strong>ব্যাখ্যা:</strong> ${item.exp}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function selectOnlyOneYear(checkbox) {
+            const checkboxes = document.getElementsByName('year');
+            checkboxes.forEach((item) => {
+                if (item !== checkbox) item.checked = false;
+            });
+        }
+
+        function submitQuiz() {
+            if (isSubmitted) return;
+
+            const name = document.getElementById('studentName').value.trim();
+            const roll = document.getElementById('studentRoll').value.trim();
+            const yearCheckboxes = document.getElementsByName('year');
+            let selectedYear = '';
+            yearCheckboxes.forEach(cb => { if (cb.checked) selectedYear = cb.value; });
+
+            if (!name || !roll || !selectedYear) {
+                alert("⚠️ অনুগ্রহ করে তোমার নাম, রোল নম্বর এবং বর্ষ (১ম বা ২য় বর্ষ) পূরণ করো!");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            let score = 0;
+            questions.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="q_${index}"]:checked`);
+                const userAns = selected ? parseInt(selected.value) : -1;
+                const correctAns = item.ans;
+
+                document.querySelectorAll(`input[name="q_${index}"]`).forEach(inp => inp.disabled = true);
+
+                const correctLabel = document.getElementById(`label_${index}_${correctAns}`);
+                correctLabel.classList.add('bg-green-100', 'border-green-500', 'font-semibold');
+                correctLabel.innerHTML += ` <span class="ml-auto text-green-700 text-sm">✔ সঠিক উত্তর</span>`;
+
+                if (userAns === correctAns) {
+                    score++;
+                } else if (userAns !== -1) {
+                    const wrongLabel = document.getElementById(`label_${index}_${userAns}`);
+                    wrongLabel.classList.add('bg-red-100', 'border-red-500');
+                    wrongLabel.innerHTML += ` <span class="ml-auto text-red-700 text-sm">✖ তোমার উত্তর</span>`;
+                }
+
+                document.getElementById(`exp_${index}`).classList.remove('hidden');
+            });
+
+            isSubmitted = true;
+            document.getElementById('submitContainer').classList.add('hidden');
+            document.getElementById('resultBox').classList.remove('hidden');
+            document.getElementById('scoreDisplay').innerText = score;
+            document.getElementById('resultStudentDetails').innerText = `নাম: ${name} | রোল: ${roll} | বর্ষ: ${selectedYear}`;
+
+            saveAndSendResult(name, roll, selectedYear, score);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function saveAndSendResult(name, roll, year, score) {
+            const now = new Date();
+            const timeStr = now.toLocaleDateString('bn-BD') + ' ' + now.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+            const recordData = { time: timeStr, name: name, roll: roll, year: year, score: score + " / ২০" };
+
+            // লোকাল স্টোরেজে সেভ
+            const records = JSON.parse(localStorage.getItem('quiz_records') || '[]');
+            records.unshift({ name, roll, year, score, time: timeStr });
+            localStorage.setItem('quiz_records', JSON.stringify(records));
+
+            // Google Sheet-এ পাঠানো
+            const statusEl = document.getElementById('cloudSyncStatus');
+            if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL.startsWith("https://")) {
+                fetch(GOOGLE_SHEET_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(recordData)
+                })
+                .then(() => {
+                    statusEl.innerText = "✅ তোমার ফলাফল সফলভাবে শিক্ষকের Google Sheet-এ জমা হয়েছে!";
+                    statusEl.className = "text-sm font-semibold text-green-700 mb-3";
+                })
+                .catch(() => {
+                    statusEl.innerText = "⚠️ ইন্টারনেট সমস্যার কারণে সার্ভারে পাঠানো যায়নি, তবে ফলাফল সংরক্ষিত আছে।";
+                    statusEl.className = "text-sm font-semibold text-orange-600 mb-3";
+                });
+            } else {
+                statusEl.innerText = "ℹ️ লোকাল মোডে ফলাফল সেভ হয়েছে।";
+            }
+        }
+
+        function resetQuiz() {
+            isSubmitted = false;
+            document.getElementById('resultBox').classList.add('hidden');
+            document.getElementById('submitContainer').classList.remove('hidden');
+            renderQuiz();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openPasswordModal() {
+            const input = document.getElementById('teacherPassInput');
+            input.value = '';
+            input.type = 'password';
+            document.getElementById('passError').classList.add('hidden');
+            document.getElementById('passwordModal').classList.remove('hidden');
+            input.focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.add('hidden');
+        }
+
+        function togglePassVisibility() {
+            const input = document.getElementById('teacherPassInput');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function verifyPassword() {
+            const entered = document.getElementById('teacherPassInput').value.trim();
+            if (entered === "2468" || entered === "২৪৬৮") {
+                closePasswordModal();
+                showTeacherDashboard();
+            } else {
+                document.getElementById('passError').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('teacherPassInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyPassword();
+        });
+
+        function showTeacherDashboard() {
+            document.getElementById('studentSection').classList.add('hidden');
+            document.getElementById('teacherSection').classList.remove('hidden');
+            loadDashboardData();
+        }
+
+        function showStudentView() {
+            document.getElementById('teacherSection').classList.add('hidden');
+            document.getElementById('studentSection').classList.remove('hidden');
+        }
+
+        function loadDashboardData() {
+            const records = JSON.parse(localStorage.getItem('quiz_records') || '[]');
+            const tbody = document.getElementById('resultsTableBody');
+            if (records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-gray-500">এখনো কোনো রেকর্ড নেই।</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = records.map((rec, i) => `
+                <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-4">${i + 1}</td>
+                    <td class="py-3 px-4 font-semibold">${rec.name}</td>
+                    <td class="py-3 px-4">${rec.roll}</td>
+                    <td class="py-3 px-4">${rec.year}</td>
+                    <td class="py-3 px-4 font-bold text-green-700">${rec.score} / ২০</td>
+                    <td class="py-3 px-4 text-gray-500 text-xs">${rec.time}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportToCSV() {
+            const records = JSON.parse(localStorage.getItem('quiz_records') || '[]');
+            if (records.length === 0) return alert("ডাউনলোড করার মতো কোনো ফলাফল নেই!");
+            let csv = "\uFEFFক্রম,নাম,রোল,বর্ষ,প্রাপ্ত নম্বর,সময়\n";
+            records.forEach((r, i) => {
+                csv += `${i + 1},"${r.name}","${r.roll}","${r.year}",${r.score},"${r.time}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Social_Work_Quiz_Results.csv';
+            a.click();
+        }
+
+        function clearAllRecords() {
+            if (confirm("সব রেকর্ড মুছে ফেলতে চান?")) {
+                localStorage.removeItem('quiz_records');
+                loadDashboardData();
+            }
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>
